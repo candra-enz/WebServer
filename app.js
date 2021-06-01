@@ -1,61 +1,34 @@
-const http = require('http');
-const port = 3000;
-const fs = require('fs');
-const renderHtml = (path,res)=>{
+const express = require('express')
+const app = express()
+const port = 3000
 
-    fs.readFile(path, (err, data) => {
-        if (err) {
-            res.writeHead(404)
-            res.write('Error: file not found')
-        } else {
-            res.write(data);
-        }
-        res.end();
-    });
+app.get('/', (req, res) => {
+    // res.send('Hello World!')
 
-};
+    // res.json({
+    //     nama :'Candra',
+    //     email:'candrakartika@gmail.com',
+    //     noHP:'4999000'
+    // });
 
 
-
-
-
-const server = http.createServer((req,res)=>{
-
-   
-
-   
-
-    res.writeHead(200, 
-        {
-        'Content-Type': 'text/html'
-        });
-    const url = req.url;
-
-    switch (url) {
-        case '/about':
-            renderHtml('./about.html', res)
-            break;
-        case '/contact':
-            renderHtml('./contact.html', res)
-            break;
-    
-        default:
-            renderHtml('./index.html', res)
-            break;
-    }
-
-
-    // if (url === '/about'){
-    //     renderHtml('./about.html',res)
-      
-    // } else if (url === '/contact') {
-    //     renderHtml('./contact.html', res)
-    // }else{
-    //     fs.readFile('./index.html', (err,data) =>{
-    //         renderHtml('./index.html', res)
-    //     });
-    // }
+    res.sendFile('./index.html',{root:__dirname});
 });
-server.listen(port, ()=>{
-    console.log(`Server is listening on port ${port}`)
+
+
+app.get('/about', (req, res) => {
+    res.sendFile('./about.html', { root: __dirname });
+})
+
+app.get('/contact', (req, res) => {
+    res.sendFile('./contact.html', { root: __dirname });
+})
+
+app.use('/', (req, res) => {
+    res.status('404')
+    res.send('<h2>404<h2>')
+})
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
 })
